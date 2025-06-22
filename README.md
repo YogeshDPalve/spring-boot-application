@@ -1,1 +1,1 @@
-## crud operationin spring-boot-application using MongoDb
+## CRUD operations in spring-boot-application using MongoDb
