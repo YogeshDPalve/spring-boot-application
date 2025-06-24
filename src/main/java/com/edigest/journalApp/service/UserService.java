@@ -13,16 +13,16 @@ import java.util.Optional;
 public class UserService {
     @Autowired
      private UserRepository userRepository;
-
+// save user in database
     public void saveEntry(User user){ userRepository.save(user); }
-
+// list all users
     public List<User> getAll(){ return userRepository.findAll(); }
-
+// find user by id
     public Optional<User> findOne(ObjectId id){ return userRepository.findById(id); }
-
+// delete user by id
     public void deleteById(ObjectId id){ userRepository.deleteById(id); }
-
-    public User findbyUserName(String username){
+// find by username
+    public User findByUserName(String username){
         return userRepository.findByUsername(username);
     }
 }

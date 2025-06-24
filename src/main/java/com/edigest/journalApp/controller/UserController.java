@@ -32,14 +32,15 @@ public class UserController {
     }
 
     @PutMapping("{username}")
-    public ResponseEntity<?> udpateUser(@RequestBody User user, @PathVariable String username){
-        User userInDb = userService.findbyUserName(username);
-        if(userInDb != null){
-            userInDb.setUsername(user.getUsername());
-            userInDb.setPassword(user.getPassword());
-            userService.saveEntry(userInDb);
-            return new ResponseEntity<>(userInDb, HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String username){
+        User userInDb = userService.findByUserName(username);
+        if(userInDb == null){
+            return new ResponseEntity<>("User not found",HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("User not found",HttpStatus.BAD_REQUEST);
+        userInDb.setUsername(user.getUsername());
+        userInDb.setPassword(user.getPassword());
+        userService.saveEntry(userInDb);
+        return new ResponseEntity<>(userInDb, HttpStatus.NO_CONTENT);
+
     }
 }
