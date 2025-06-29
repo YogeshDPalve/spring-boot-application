@@ -8,9 +8,13 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,27 +24,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
-    @GetMapping
-    public List<User> getAllUsers (){
-        return userService.getAll();
-    }
-
-    @PostMapping
-    public void createUser(@RequestBody User user){
-        userService.saveEntry(user);
-    }
-
-    @PutMapping("{username}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String username){
         User userInDb = userService.findByUserName(username);
-        if(userInDb == null){
-            return new ResponseEntity<>("User not found",HttpStatus.BAD_REQUEST);
-        }
         userInDb.setUsername(user.getUsername());
         userInDb.setPassword(user.getPassword());
-        userService.saveEntry(userInDb);
-        return new ResponseEntity<>(userInDb, HttpStatus.NO_CONTENT);
 
+        userService.saveUser(userInDb);
+        return ResponseEntity.ok(userInDb);
     }
+
 }
