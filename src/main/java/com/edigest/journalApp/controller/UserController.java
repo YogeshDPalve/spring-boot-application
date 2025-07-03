@@ -1,8 +1,10 @@
 package com.edigest.journalApp.controller;
 
+import com.edigest.journalApp.api.responce.TodoResponce;
 import com.edigest.journalApp.entity.JournalEntry;
 import com.edigest.journalApp.entity.User;
 import com.edigest.journalApp.service.JournalEntryService;
+import com.edigest.journalApp.service.TodoService;
 import com.edigest.journalApp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,8 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private TodoService todoService;
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -35,6 +38,16 @@ public class UserController {
 
         userService.saveUser(userInDb);
         return ResponseEntity.ok(userInDb);
+    }
+
+    @GetMapping("/todo")
+    public ResponseEntity<?> getTodos(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        TodoResponce todos = todoService.getTodos();
+
+        return ResponseEntity.ok().body(todos);
     }
 
 }
